@@ -1,1 +1,466 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تهنئة العيد - أنشئ بطاقتك الآن</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <style>
+        /* المتغيرات العامة */
+        :root {
+            --primary: #005a56;
+            --primary-light: #007a75;
+            --primary-dark: #003a37;
+            --bg-color: #f4f7f6;
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow-soft: 0 20px 40px rgba(0, 0, 0, 0.08);
+            --shadow-glow: 0 0 40px rgba(0, 90, 86, 0.2);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* إعادة ضبط أساسية */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Almarai', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 90, 86, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 122, 117, 0.05) 0px, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* شاشة التحميل (Loader) */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease;
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(0, 90, 86, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* الهيكل العام */
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            animation: fadeIn 1s ease forwards;
+            opacity: 0;
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* الهيدر */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* شبكة المحتوى الرئيسي */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        /* لوحة التحكم (Glassmorphism) */
+        .controls-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .input-group {
+            position: relative;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #e1e1e1;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.9);
+            color: var(--text-main);
+            transition: var(--transition);
+            outline: none;
+        }
+        .input-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 90, 86, 0.1);
+            transform: translateY(-2px);
+        }
+        .input-group input::placeholder {
+            color: #a1a1a6;
+        }
+
+        /* الأزرار */
+        .btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 10px 20px rgba(0, 90, 86, 0.2);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 90, 86, 0.3);
+        }
+        .btn-primary:active {
+            transform: translateY(1px) scale(0.98);
+        }
+        
+        .actions-row {
+            display: flex;
+            gap: 15px;
+        }
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid #e1e1e1;
+            flex: 1;
+        }
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background: #f8ffff;
+            transform: translateY(-2px);
+        }
+
+        /* لوحة العرض (الصورة) */
+        .preview-panel {
+            position: relative;
+            border-radius: 24px;
+            padding: 10px;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .preview-panel::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%; height: 90%;
+            background: var(--primary-light);
+            filter: blur(80px);
+            opacity: 0.2;
+            z-index: -1;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .preview-panel:hover::before {
+            opacity: 0.4;
+            filter: blur(100px);
+        }
+        
+        canvas {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+            display: block;
+        }
+        .preview-panel:hover canvas {
+            transform: scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        /* الفوتر */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+        footer i { color: #e25555; }
+
+        /* التجاوب مع الشاشات (Responsive) */
+        @media (max-width: 992px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .wrapper { padding: 30px 15px; }
+            h1 { font-size: 2rem; }
+            .preview-panel { animation: none; }
+        }
+        @media (max-width: 480px) {
+            .controls-panel { padding: 25px; }
+            .btn { padding: 15px; font-size: 1rem; }
+            .actions-row { flex-direction: column; }
+        }
+        
+        /* تأثير ظهور النص في الكانفاس */
+        .canvas-text-animate {
+            animation: textFadeIn 0.3s ease-out;
+        }
+        @keyframes textFadeIn {
+            from { opacity: 0.8; filter: blur(2px); }
+            to { opacity: 1; filter: blur(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="margin-top: 15px; font-weight: bold; color: var(--primary);">جاري تجهيز التجربة...</p>
+    </div>
+
+    <div class="wrapper">
+        <header>
+            <h1>بطاقة تهنئة العيد</h1>
+            <p class="subtitle">صمم بطاقتك الخاصة وشاركها مع من تحب بلمسة أنيقة</p>
+        </header>
+
+        <main class="main-grid">
+            <div class="controls-panel">
+                <div class="input-group">
+                    <input type="text" id="nameInput" placeholder="أدخل اسمك الكريم هنا..." autocomplete="off" maxlength="30" />
+                </div>
+                
+                <button id="downloadBtn" class="btn btn-primary">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> تحميل الصورة بجودة عالية
+                </button>
+                
+                <div class="actions-row">
+                    <button id="shareBtn" class="btn btn-secondary">
+                        <i class="fa-solid fa-share-nodes"></i> مشاركة
+                    </button>
+                    <button id="copyLinkBtn" class="btn btn-secondary">
+                        <i class="fa-solid fa-link"></i> نسخ الرابط
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <canvas id="canvas"></canvas>
+            </div>
+        </main>
+
+        <footer>
+            <p>صُنع بحب <i class="fa-solid fa-heart"></i> وكل عام وأنتم بخير</p>
+        </footer>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const nameInput = document.getElementById('nameInput');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const loader = document.getElementById('loader');
+
+        // تجهيز الصورة الأساسية
+        const image = new Image();
+        image.crossOrigin = "Anonymous"; 
+        image.src = 'https://raw.githubusercontent.com/BaselGhanem/DAD-Eid-Greeting/refs/heads/main/Eid%20Greeting%202026.jpg';
+
+        let drawTimeout; // لتقليل الـ lag اثناء الكتابة
+
+        // عند تحميل الصورة والخطوط
+        Promise.all([
+            new Promise(resolve => image.onload = resolve),
+            document.fonts.ready
+        ]).then(() => {
+            // إخفاء الـ Loader
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 600);
+            
+            // ضبط أبعاد الكانفاس الحقيقية
+            canvas.width = image.width;
+            canvas.height = image.height;
+            draw();
+        });
+
+        // دالة الرسم الرئيسية
+        function draw() {
+            // مسح الكانفاس ورسم الصورة الأصلية
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(image, 0, 0);
+
+            const name = nameInput.value.trim();
+            if (name) {
+                // إضافة كلاس لعمل تأثير وميض خفيف عند تحديث النص (محاكاة الانيميشن)
+                canvas.classList.remove('canvas-text-animate');
+                void canvas.offsetWidth; // Trigger reflow
+                canvas.classList.add('canvas-text-animate');
+
+                // إعدادات الخط الأساسية
+                let baseFontSize = canvas.width * 0.055; 
+                ctx.font = `800 ${baseFontSize}px 'Almarai'`;
+                ctx.fillStyle = '#005a56'; 
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // إضافة ظل خفيف للنص لزيادة الاحترافية والوضوح
+                ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 2;
+
+                // نظام ذكي لضبط حجم الخط بناءً على طول الاسم
+                let textWidth = ctx.measureText(name).width;
+                const maxWidth = canvas.width * 0.75; // أقصى عرض مسموح للنص هو 75% من الصورة
+                
+                if (textWidth > maxWidth) {
+                    // تصغير الخط تدريجياً إذا كان الاسم طويلاً
+                    const scaleRatio = maxWidth / textWidth;
+                    baseFontSize = baseFontSize * scaleRatio;
+                    ctx.font = `800 ${baseFontSize}px 'Almarai'`;
+                }
+
+                // إحداثيات الكتابة (منتصف العرض، ونقطة محددة للارتفاع)
+                const x = canvas.width / 2;
+                const y = canvas.height * 0.76; 
+                
+                ctx.fillText(name, x, y);
+                
+                // إعادة ضبط الظل حتى لا يؤثر على رسمات أخرى مستقبلا
+                ctx.shadowColor = 'transparent';
+            }
+        }
+
+        // استخدام requestAnimationFrame لضمان عدم حدوث Lag عند الكتابة السريعة
+        nameInput.addEventListener('input', () => {
+            if (drawTimeout) cancelAnimationFrame(drawTimeout);
+            drawTimeout = requestAnimationFrame(draw);
+        });
+
+        // زر التحميل
+        downloadBtn.addEventListener('click', () => {
+            // تأثير بصري للزر عند الضغط
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحضير...';
+            
+            setTimeout(() => {
+                const link = document.createElement('a');
+                const userName = nameInput.value.trim() ? nameInput.value.trim().replace(/\s+/g, '_') : 'Card';
+                link.download = `Eid_Mubarak_${userName}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.click();
+                
+                downloadBtn.innerHTML = '<i class="fa-solid fa-check"></i> تم التحميل!';
+                setTimeout(() => downloadBtn.innerHTML = originalText, 2000);
+            }, 300);
+        });
+
+        // زر المشاركة (يستخدم Web Share API إذا كان مدعوماً)
+        shareBtn.addEventListener('click', async () => {
+            const originalText = shareBtn.innerHTML;
+            shareBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+            try {
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                const blob = await (await fetch(dataUrl)).blob();
+                const file = new File([blob], 'Eid_Greeting.jpg', { type: 'image/jpeg' });
+
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: 'تهنئة العيد',
+                        text: 'كل عام وأنتم بخير! انظر إلى بطاقة المعايدة الخاصة بي.',
+                        files: [file]
+                    });
+                } else {
+                    alert('متصفحك لا يدعم خاصية المشاركة المباشرة للصور. يرجى تحميل الصورة ومشاركتها يدوياً.');
+                }
+            } catch (error) {
+                console.log('Share canceled or failed', error);
+            }
+            shareBtn.innerHTML = originalText;
+        });
+
+        // زر نسخ الرابط
+        copyLinkBtn.addEventListener('click', () => {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                const originalText = copyLinkBtn.innerHTML;
+                copyLinkBtn.innerHTML = '<i class="fa-solid fa-check"></i> تم النسخ';
+                copyLinkBtn.style.color = '#28a745';
+                copyLinkBtn.style.borderColor = '#28a745';
+                setTimeout(() => {
+                    copyLinkBtn.innerHTML = originalText;
+                    copyLinkBtn.style.color = '';
+                    copyLinkBtn.style.borderColor = '';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
